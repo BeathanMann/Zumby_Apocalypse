@@ -11,9 +11,13 @@ var lastLoopRun = 0;
 var score = 0;
 var iterations = 0; //time the game has run since loaded
 
-//i do not understand this
+var lastShot = 0;
+var shotDelay = 300;
+
+
 var controller = new Object();
 var enemies = new Array();
+var lasers = new Array();
 
 function createSprite(element, x, y, w, h) {
   var result = new Object();
@@ -90,46 +94,55 @@ function handleControls() {
   if (controller.right) {
     hero.x += HERO_MOVEMENT;
   }
-  if (controller.space && laser.y <= -120) {
-    laser.x = hero.x + 17;
-    laser.y = hero.y - laser.h + 18;
+  if (controller.space) {
+    if (lastShot + shotDelay < performance.now()) {
+        lastShot = performance.now()
+        var elementName = 'laser' + getRandom(10000000);
+        var laser = createSprite(elementName, hero.x + hero.w / 2, hero.y, 2, 50)
+        var element = document.createElement('div');
+        element.id = laser.element;
+        element.className = 'laser';
+        document.children[0].appendChild(element);
+        lasers.push(laser)
+      }
   }
   
   ensureBounds(hero);
 }
 
 //when a zumb is killed
-function killEnemy(element){
-      element.style.visibility = 'hidden';
-      element.parentNode.removeChild(element);
+function killEnemy(enemy, laser) {
+    el1 = document.getElementById(enemy.element);
+    el1.parentNode.removeChild(el1);
+    el2 = document.getElementById(laser.element);
+    el2.parentNode.removeChild(el2);    
 }
-
 //checks if laser hits a zumb + scoring system
 function checkCollisions() {
   for (var i = 0; i < enemies.length; i++) {
-    if (intersects(laser, enemies[i])) {
-      var element = document.getElementById(enemies[i].element);
-      element.style.background ='#e54e3b';
-      
-      killEnemy(element);
+    for (var j = 0; j < lasers.length; j++) {
+      if (intersects(lasers[j], enemies[i])) {
+        killEnemy(enemies[i], lasers[j])
+        enemies.splice(i, 1);
+        i--;
+        lasers.splice(j, 1)
+        j--
 
-      enemies.splice(i, 1);
-      i--;
-      laser.y = -laser.h;
-      score += Math.floor(Math.random() * 3)+1;
-      document.getElementById("score").style.color = "#a6e06b";
-      //i do not know how to change the color back to white after 700 ms, just doesnt work the way i know how to do it
+        score += Math.floor(Math.random() * 3) + 1;
+        document.getElementById("score").style.color = "#a6e06b";
+        //i do not know how to change the color back to white after 700 ms, just doesnt work the way i know how to do it
     } else if (intersects(hero, enemies[i])) {
-      gameOver();
+        gameOver();
     } else if (enemies[i].y + enemies[i].h >= 467) {
-      var element = document.getElementById(enemies[i].element);
-      element.style.visibility = 'hidden';
-      element.parentNode.removeChild(element);
-      enemies.splice(i, 1);
-      i--;
-      if (score > 0) {score -= Math.floor(Math.random() * 2)+1};
+        var element = document.getElementById(enemies[i].element);
+        element.style.visibility = 'hidden';
+        element.parentNode.removeChild(element);
+        enemies.splice(i, 1);
+        i--;
+        if (score > 0) {score -= Math.floor(Math.random() * 2) + 1 };
     }
-  }
+}
+}
 }
 
 //when character is killed
@@ -183,7 +196,9 @@ function updatePositions() {
     enemies[i].x += Math.floor(Math.random() * 2) - 0.5;
     ensureBounds(enemies[i], true);
   }
-  laser.y -= 60; //laser speed
+  for (let i = 0; i < lasers.length; i++) {
+      lasers[i].y -= 60;
+  }
 }
 
 //spawning zumbs according to the time played
