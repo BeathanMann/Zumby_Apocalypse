@@ -142,15 +142,11 @@ function relGame() {
 
 //when character is killed
 function gameOver() {
-  var element = document.getElementById(hero.element);
-  element.style.background = '#e54e3b';
-  setTimeout(function() {removeHero(element);}, 700);
-  element = document.getElementById(laser.element);
-  element.style.visibility = 'hidden';
-  element = document.getElementById('gameover');
-  element.style.visibility = 'visible';
-  pause() //how do i pause the game without breaking it?
-}
+    var element = document.getElementById(hero.element);
+    element.style.visibility = 'hidden';
+    element = document.getElementById('gameover');
+    element.style.visibility = 'visible';
+  }
 
 //scoring and stuff
 function showSprites() {
@@ -206,31 +202,33 @@ function getRandom(maxSize) {
 
 //loops something
 function loop() {
-  if (new Date().getTime() - lastLoopRun > 40) {
-    updatePositions();
-    handleControls();
-    checkCollisions();
-    
-    addEnemy();
-    
-    showSprites();
-    
-    lastLoopRun = new Date().getTime();
-    iterations++;
+    if (new Date().getTime() - lastLoopRun > 40) {
+      updatePositions();
+      handleControls();
+      checkCollisions();
+      
+      addEnemy();
+      
+      showSprites();
+      
+      lastLoopRun = new Date().getTime();
+      iterations++;
+    }
   }
-  setTimeout('loop();', 2);
-}
-
-document.onkeydown = function(evt) {
-  toggleKey(evt.keyCode, true);
-};
-
-document.onkeyup = function(evt) {
-  toggleKey(evt.keyCode, false);
-};
-
-//spawns character
-var hero = createSprite('hero', 123, 410, 20, 20);
-var laser = createSprite('laser', 0, -120, 2, 50);
-
-loop();
+  
+  document.onkeydown = function(evt) {
+    toggleKey(evt.keyCode, true);
+  };
+  
+  document.onkeyup = function(evt) {
+    toggleKey(evt.keyCode, false);
+  };
+  function animate() {
+    globalID = requestAnimationFrame(animate);
+    loop()
+  };
+  //spawns character
+  var hero = createSprite('hero', 123, 410, 20, 20);
+  var laser = createSprite('laser', 0, -120, 2, 50);
+  
+  animate()
