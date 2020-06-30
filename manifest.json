@@ -1,0 +1,20 @@
+{
+    "name": "Zumby Apocalyplse",
+    "description" : "A 2D shooter game, where you have to take down zumbys (no, not zombies) and survive for as long as you can!",
+    "version": "1.0",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_popup": "apocalypse.html",
+        "default_icon": "l.png"
+    },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+Z",
+                "mac": "MacCtrl+Shift+Z"
+            },
+        "description": "Opens the game"
+        }
+    }
+ 
+}
