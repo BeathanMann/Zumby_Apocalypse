@@ -61,8 +61,8 @@ function ensureBounds(sprite, ignoreY) {
   if (!ignoreY && sprite.y < 0) {
     sprite.y = 0;
   }
-  if (sprite.x + sprite.w > 257) {
-    sprite.x = 257 - sprite.w;
+  if (sprite.x + sprite.w > 259) {
+    sprite.x = 259 - sprite.w;
   }
   if (!ignoreY && sprite.y + sprite.h > 450) {
     sprite.y = 450 - sprite.h;
@@ -111,7 +111,7 @@ function checkCollisions() {
       var element = document.getElementById(enemies[i].element);
       element.style.background ='#e54e3b';
       
-      setTimeout(function() {killEnemy(element);}, 400);
+      killEnemy(element);
 
       enemies.splice(i, 1);
       i--;
@@ -146,7 +146,25 @@ function gameOver() {
     element.style.visibility = 'hidden';
     element = document.getElementById('gameover');
     element.style.visibility = 'visible';
-  }
+    var texty = document.getElementById('gameoverunder');
+    texty.style.visibility = 'visible';
+    texty.innerHTML = 'Your game will restart in 5';
+    setTimeout(function() {
+        texty.innerHTML = 'Your game will restart in 4';
+    }, 1000);
+    setTimeout(function() {
+        texty.innerHTML = 'Your game will restart in 3';
+    }, 1000);
+    setTimeout(function() {
+        texty.innerHTML = 'Your game will restart in 2';
+    }, 1000);
+    setTimeout(function() {
+        texty.innerHTML = 'Your game will restart in 1';
+    }, 1000);
+    setTimeout(function() {
+        relGame();
+    }, 1000);
+}
 
 //scoring and stuff
 function showSprites() {
